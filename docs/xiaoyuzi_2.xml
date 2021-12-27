@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task cron="0 0/1 * * * ? " blnRunning="true">
+    <from name="localhost">
+        <properties>
+            <driver-class-name>com.mysql.cj.jdbc.Driver</driver-class-name>
+            <username>root</username>
+            <password>123456</password>
+            <url>jdbc:mysql://localhost:3306/wdb1?serverTimezone=UTC</url>
+            <name>fromDataSource</name>
+        </properties>
+        <dicts/>
+    </from>
+    <to name="250" blnCheckRepeat="true">
+        <properties>
+            <driver-class-name>com.mysql.cj.jdbc.Driver</driver-class-name>
+            <password>Weaver_2021</password>
+            <url>jdbc:mysql://192.168.2.250:3306/ec?serverTimezone=UTC</url>
+            <name>toDataSource</name>
+            <username>ecology</username>
+        </properties>
+    </to>
+    <tables>
+        <table name="adminuser_system" toName="systemadminuser_1" whereCondition=" 1=1" >
+            <fields>
+                <field name="aid" type="int" targetName="pid" targetType="int" incrementalField="true" />
+                <field name="account" type="string" targetName="account" targetType="string"/>
+                <field name="username" type="varchar" targetName="username" targetType="varchar"/>
+                <field targetName="password" targetType="varchar" handleType="" handleExpress="111111"/>
+                <field name="roleid" type="int" targetName="roleid" targetType="int" handleType="QL_EXPRESS"
+                       handleExpress="roleid + 100"/>
+                <field targetName="addtime" targetType="int" handleType="CONSTANT" handleExpress="NOW_SECOND_INT"/>
+                <field targetName="logintime" targetType="int" handleType="CONSTANT" handleExpress="NOW_SECOND_INT"/>
+
+                <field targetName="created" targetType="datetime" handleType="CONSTANT" handleExpress="NORM_DATETIME_FORMAT"/>
+                <field targetName="creater" targetType="int" handleExpress="1"/>
+                <field targetName="modified" targetType="datetime" handleType="CONSTANT" handleExpress="NORM_DATETIME_FORMAT"/>
+                <field targetName="modifier" targetType="int" handleExpress="1"/>
+                <field targetName="uuid" targetType="varchar" handleType="CONSTANT" handleExpress="SIMPLE_UUID"/>
+            </fields>
+        </table>
+        <table name="adminlog" toName="adminlog" whereCondition="">
+            <fields>
+                <field name="id" type="int" targetName="id" targetType="integer"  incrementalField="true" />
+                <field name="oper" type="int" targetName="oper" targetType="int" />
+                <field name="addtime" type="int" targetName="addtime" targetType="int" />
+                <field name="delname" type="varchar" targetName="delname" targetType="varchar" />
+                <field name="delid" type="int" targetName="delid" targetType="int" />
+                <field name="adminname" type="varchar" targetName="adminname" targetType="varchar" />
+            </fields>
+        </table>
+    </tables>
+</task>

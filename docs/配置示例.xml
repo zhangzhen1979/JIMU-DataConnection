@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--cron 在接收rest和webSocket数据时不需要配置, 其他情况必须配置
+    blnRunning: 在停用同步任务时设置为 false
+-->
+<task cron="0 0/1 * * * ? " blnRunning="true">
+    <!-- name: 数据来源名称，必填
+    blnRestReceive： 是否接收rest数据 -->
+    <from name="26环境" blnRestReceive="false">
+        <!-- db连接配置，无固定key,blnRestReceive为true时，properties为空  -->
+        <properties>
+            <name>fromDataSource</name>
+            <driver-class-name>com.mysql.cj.jdbc.Driver</driver-class-name>
+            <url>jdbc:mysql://192.168.2.250:3306/ecology_base?serverTimezone=UTC</url>
+            <username>ecology</username>
+            <password>Weaver_2021</password>
+        </properties>
+        <dicts>
+            <!--name\sql\key\value 都必填, 无字典项请使用 <dicts/> -->
+            <dict name="dict1" sql="select id, name from user " key="id" value="name"/>
+        </dicts>
+    </from>
+    <!-- name: 数据目标名称 -->
+    <to name="250ec" >
+        <!-- db连接配置，无固定key， 暂不支持非结构化数据存储 -->
+        <properties>
+            <name>toDataSource</name>
+            <driver-class-name>com.mysql.cj.jdbc.Driver</driver-class-name>
+            <url>jdbc:mysql://192.168.2.250:3306/ec?serverTimezone=UTC</url>
+            <username>ecology</username>
+            <password>Weaver_2021</password>
+        </properties>
+    </to>
+    <!--同步的所有表-->
+    <tables>
+        <!--必填： name: 源表表名 | sourceId：源表表ID | toName: 目标表表名 | id：目标表ID字段
+        非必填字段：whereCondition：源表查询条件，大于小于需要转义 | parentTable： 父表表名 | sourceParentId：父表ID字段, 配置后更新子表父表ID
+
+        | blnUpdateData： 是否更新现有数据-->
+        <table name="hrmresource" toName="hrmresource_copy" whereCondition="id &lt; 100" id="id">
+            <fields>
+                <!--必填：targetName：目标字段名 | targetType：目标字段类型
+                非必填：name： 源表字段名 | type: 源表字段类型 | handleType：数据处理类型 | handleExpress: 数据处理表达式，具体配置见readme.md
+                incrementalField： 增量字段，建议一个表只配置一个 |
+                parentCountField：父表汇总字段 | parentSumField：父表求和字段 ， 需配合父表表名一起使用 -->
+                <field name="ID" type="int" targetName="ID" targetType="int" incrementalField="true"/>
+            </fields>
+        </table>
+    </tables>
+</task>

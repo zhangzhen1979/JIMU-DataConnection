@@ -1,0 +1,11 @@
+server:
+  port: 8888
+
+xml:
+  path: D:\temp\temp\thinkdifferent-data\docs\demo
+
+
+logging:
+  file:
+    name: test.log
+    path: D:\temp\
