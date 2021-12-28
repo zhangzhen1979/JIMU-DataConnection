@@ -1,0 +1,36 @@
+.idea/
+**/target/
+*.iml
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
+
+ cmake-build-debug/
+
+ *.iws
+
+ out/
+ .idea_modules/
+ atlassian-ide-plugin.xml
+ .idea/replstate.xml
+ .DS_Store
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+.settings
+.vscode
+**/.classpath/
+**/.factorypath/
+**/.project/
+**/.DS_Store
+__MACOSX
+
+runtime/
+#data/
+log/
+work/
+**/runtime/
+#**/data/
+**/logs/
+**/work/
