@@ -36,7 +36,8 @@ public class ScheduleConfiguration {
     @PostConstruct
     public void initSystemProperties() {
         // 设置同步任务xml配置文件目录, 默认当前jar运行目录，
-        System.setProperty(SYSTEM_FILE_PATH_KEY, StringUtils.isNotBlank(xmlPath) ? xmlPath : System.getProperty("user.dir"));
+        System.setProperty(SYSTEM_FILE_PATH_KEY
+                , StringUtils.isNotBlank(xmlPath) ? xmlPath : System.getProperty("user.dir")+ File.separator + "conf");
         // 启动文件夹监控
         fileMonitor.initFileMonitor();
 

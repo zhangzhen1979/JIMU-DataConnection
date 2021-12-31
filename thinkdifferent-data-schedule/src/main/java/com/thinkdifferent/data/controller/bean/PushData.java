@@ -1,6 +1,7 @@
 package com.thinkdifferent.data.controller.bean;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -13,6 +14,7 @@ import java.util.Map;
  * @date 2021/12/25 22:01
  */
 @Data
+@Accessors(chain = true)
 public class PushData {
     /**
      * 任务名

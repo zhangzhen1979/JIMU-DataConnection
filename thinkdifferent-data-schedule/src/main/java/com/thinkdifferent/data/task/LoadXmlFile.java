@@ -3,12 +3,12 @@ package com.thinkdifferent.data.task;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.dialect.DialectFactory;
-import com.google.gson.JsonObject;
 import com.thinkdifferent.data.bean.FromDo;
 import com.thinkdifferent.data.bean.TaskDo;
 import com.thinkdifferent.data.bean.ToDo;
 import com.thinkdifferent.data.cache.DictDataCache;
 import com.thinkdifferent.data.controller.bean.PushData;
+import com.thinkdifferent.data.controller.bean.RespData;
 import com.thinkdifferent.data.datasource.DataSourceManager;
 import com.thinkdifferent.data.process.DataHandlerType;
 import com.thinkdifferent.data.scheduled.CronTaskRegistrar;
@@ -54,7 +54,7 @@ public class LoadXmlFile implements Closeable {
      * <li>key : filePath</li>
      * <li>value : taskDo</li>
      */
-    private static final Map<String, TaskDo> MAP_RUNNING_TASKS = new HashMap<>();
+    private static final Map<String, TaskDo> MAP_SUCCESS_TASKS = new HashMap<>();
 
     /**
      * 加载单个xml文件
@@ -71,7 +71,7 @@ public class LoadXmlFile implements Closeable {
             DictDataCache.loadDictionary(taskDo);
 
             // 3. 记录已加载的配置信息, 加入定时任务
-            MAP_RUNNING_TASKS.put(oneXmlFilePath, taskDo);
+            MAP_SUCCESS_TASKS.put(oneXmlFilePath, taskDo);
             if (Boolean.FALSE.equals(taskDo.getFrom().getBlnRestReceive())) {
                 cronTaskRegistrar.addCronTask(new CronTask(new DynamicTask(taskDo), taskDo.getCron()));
             }
@@ -149,7 +149,7 @@ public class LoadXmlFile implements Closeable {
      * @param filePath 文件路径
      */
     public void removeTask(String filePath) {
-        TaskDo taskDo = MAP_RUNNING_TASKS.get(filePath);
+        TaskDo taskDo = MAP_SUCCESS_TASKS.get(filePath);
         if (Objects.isNull(taskDo)) {
             return;
         }
@@ -162,14 +162,14 @@ public class LoadXmlFile implements Closeable {
         DataSourceManager.loadOffDataSources(taskDo);
 
         // 移除加载的任务
-        MAP_RUNNING_TASKS.remove(filePath);
+        MAP_SUCCESS_TASKS.remove(filePath);
     }
 
     /**
      * @return 所有的运行的任务
      */
     public Map<String, TaskDo> getRunningTasks() {
-        return MAP_RUNNING_TASKS;
+        return MAP_SUCCESS_TASKS;
     }
 
     /**
@@ -178,28 +178,25 @@ public class LoadXmlFile implements Closeable {
     @Override
     public void close() {
         System.out.println("-----------------------");
-        System.out.println(MAP_RUNNING_TASKS);
-        MAP_RUNNING_TASKS.keySet().forEach(this::removeTask);
+        System.out.println(MAP_SUCCESS_TASKS);
+        MAP_SUCCESS_TASKS.keySet().forEach(this::removeTask);
     }
 
     /**
-     * rest数据处理
+     * 接收、处理数据
      *
      * @param pushData 接收到的数据
      * @return bln
      */
-    public JsonObject checkAndDealData(PushData pushData) {
+    public RespData checkAndDealData(PushData pushData) {
         if (pushData.getData().isEmpty()) {
             throw new RuntimeException("传入数据为空！");
         }
-        TaskDo taskDo = MAP_RUNNING_TASKS.values().stream()
+        TaskDo taskDo = MAP_SUCCESS_TASKS.values().stream()
                 .filter(task -> StringUtils.equals(task.getName(), pushData.getTaskName())).findAny()
                 .orElseThrow(() -> new RuntimeException("配置信息不存在"));
         DynamicTask dynamicTask = new DynamicTask(taskDo);
         dynamicTask.passiveData(pushData);
-        JsonObject joResult = new JsonObject();
-        joResult.addProperty("flag", true);
-        joResult.addProperty("msg", "SUCCESS");
-        return joResult;
+        return RespData.success();
     }
 }

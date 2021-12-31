@@ -10,13 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>thinkdifferent-data-schedule</artifactId>
-    <description>动态定时任务, 定时加载配置文件</description>
-
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -31,12 +24,7 @@
             <artifactId>spring-boot-starter-web</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-websocket</artifactId>
-            <version>2.6.2</version>
-            <scope>provided</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
@@ -45,10 +33,12 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>cn.hutool</groupId>-->
+<!--            <artifactId>hutool-all</artifactId>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${basedir}/../lib/hutool-all-5.7.18.jar</systemPath>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.thinkdifferent.data</groupId>
             <artifactId>thinkdifferent-data-pom</artifactId>
@@ -62,5 +52,34 @@
             <artifactId>opencsv</artifactId>
             <version>5.5.2</version>
         </dependency>
+
+        <!--CXF webService-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web-services</artifactId>
+            <version>${webserver.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
+            <version>3.2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+            <version>3.3.6</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
+
+    <description>动态定时任务, 定时加载配置文件</description>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+
+        <webserver.version>2.2.6.RELEASE</webserver.version>
+    </properties>
 </project>

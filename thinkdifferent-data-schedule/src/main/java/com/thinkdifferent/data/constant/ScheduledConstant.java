@@ -22,6 +22,6 @@ public interface ScheduledConstant {
     /**
      * 单次查询操作的数量
      */
-    int HANDLE_NUM = 1000;
+    int HANDLE_NUM = 500;
 
 }

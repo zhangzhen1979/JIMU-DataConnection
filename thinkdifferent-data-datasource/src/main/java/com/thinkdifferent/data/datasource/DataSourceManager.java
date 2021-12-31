@@ -72,6 +72,7 @@ public class DataSourceManager {
      * @param properties 数据库连接参数
      */
     public static void loadDataSourceFromProperties(String name, Properties properties) throws Exception {
+        // todo 暂时无用，给其他数据源预留
         String type = DataSourceType.getDataSourceTypeByDriverClassName(properties.getProperty("driver-class-name"));
         SmartDataSource smartDataSource = MAP_DATA_SOURCE_EXIST.get(type)
                 .setProperties(properties);

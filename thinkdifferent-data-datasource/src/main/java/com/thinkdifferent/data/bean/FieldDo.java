@@ -57,7 +57,7 @@ public class FieldDo {
     @JacksonXmlProperty(isAttribute = true)
     private Boolean incrementalField;
     /**
-     * 父表汇总字段
+     * 父表计数字段
      */
     @JacksonXmlProperty(isAttribute = true)
     private String parentCountField;

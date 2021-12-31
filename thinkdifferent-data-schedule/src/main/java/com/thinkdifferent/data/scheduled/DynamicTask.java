@@ -3,8 +3,10 @@ package com.thinkdifferent.data.scheduled;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.Entity;
+import cn.hutool.db.Page;
 import cn.hutool.db.dialect.Dialect;
 import cn.hutool.db.sql.Condition;
+import cn.hutool.db.sql.Order;
 import cn.hutool.db.sql.SqlBuilder;
 import cn.hutool.json.JSONObject;
 import com.google.common.collect.Maps;
@@ -12,8 +14,8 @@ import com.thinkdifferent.data.DataHandlerManager;
 import com.thinkdifferent.data.bean.*;
 import com.thinkdifferent.data.constant.ScheduledConstant;
 import com.thinkdifferent.data.controller.bean.PushData;
-import com.thinkdifferent.data.datasource.DataSourceManager;
 import com.thinkdifferent.data.csvLog.OpenCsvLog;
+import com.thinkdifferent.data.datasource.DataSourceManager;
 import com.thinkdifferent.data.process.DataHandlerEntity;
 import com.thinkdifferent.data.process.DataHandlerType;
 import com.thinkdifferent.data.util.SuperSqlBuilder;
@@ -75,37 +77,47 @@ public class DynamicTask implements Runnable {
     @SneakyThrows
     @Override
     public void run() {
-        OpenCsvLog.info(this.taskName, "任务【{}】定时同步开始执行", this.taskName);
-        for (TableDo table : this.taskDo.getTables()) {
-            int i = 0;
-            // 原数据
-            List<Map<String, Object>> dataList;
-            Map<String, Object> mapIncrementalCondition = getIncrementalCondition(table);
-
-            String incrementalCondition = "";
-            List<Object> incrementalValues = null;
-            if (!mapIncrementalCondition.isEmpty()) {
-                incrementalCondition = mapIncrementalCondition.keySet().stream()
-                        .map(o -> o + " > {} ")
-                        .collect(Collectors.joining(" and "));
-
-                incrementalValues = Arrays.asList(mapIncrementalCondition.values().toArray());
-            }
-
-            do {
-                // 根据增量字段获取对应的增量条件
-                // 获取原数据
-                dataList = listBaseData(table, i, incrementalCondition, incrementalValues);
-                // 批量插入的数据，进行数据加工
-                final List<Entity> entityList = processData(table, dataList);
-                // 数据转储
-                dataSave(table, entityList, i);
-                // 结束操作
-                afterSave(table);
-                i++;
-            } while (dataList.size() == ScheduledConstant.HANDLE_NUM);
+        // 检测任务是否在运行
+        if (taskRunning()) {
+            return;
         }
+        OpenCsvLog.info(this.taskName, "任务【{}】定时同步开始执行", this.taskName);
+        this.taskDo.getTables().parallelStream()
+                .forEach(table->{
+                    int i = 0;
+                    // 原数据
+                    List<Map<String, Object>> dataList;
+                    Map<String, Object> mapIncrementalCondition = getIncrementalCondition(table);
+
+                    String incrementalCondition = "";
+                    List<Object> incrementalValues = null;
+                    if (!mapIncrementalCondition.isEmpty()) {
+                        incrementalCondition = mapIncrementalCondition.keySet().stream()
+                                .map(o -> o + " > {} ")
+                                .collect(Collectors.joining(" and "));
+
+                        incrementalValues = Arrays.asList(mapIncrementalCondition.values().toArray());
+                    }
+
+                    do {
+                        // 根据增量字段获取对应的增量条件
+                        // 获取原数据
+                        dataList = listBaseData(table, i, incrementalCondition, incrementalValues);
+                        // 批量插入的数据，进行数据加工
+                        final List<Entity> entityList = processData(table, dataList);
+                        // 数据转储
+                        dataSave(table, entityList, i);
+                        // 结束操作
+                        afterSave(table);
+                        i++;
+                    } while (dataList.size() == ScheduledConstant.HANDLE_NUM);
+                });
         OpenCsvLog.info(this.taskName, "任务【{}】定时同步执行完成", this.taskName);
+    }
+
+    private boolean taskRunning() {
+
+        return false;
     }
 
     /**
@@ -116,27 +128,28 @@ public class DynamicTask implements Runnable {
     private void afterSave(TableDo table) {
         if (StringUtils.isNotBlank(table.getParentTable())) {
             final TableDo parentTable = this.taskDo.getTables().stream()
-                    .filter(pTable -> StringUtils.equalsIgnoreCase(table.getParentTable(), pTable.getName()))
+                    .filter(pTable -> StringUtils.equalsIgnoreCase(table.getParentTable(), pTable.getTargetName()))
                     .findAny().orElse(null);
             if (Objects.isNull(parentTable)) {
                 throw new IllegalStateException(StrUtil.format("子表【{}】的父表【{}】信息未配置", table.getName(), table.getParentTable()));
             }
-            String childTableName = this.toDialect.getWrapper().wrap(table.getName());
-            String parentTableName = this.toDialect.getWrapper().wrap(parentTable.getName());
+            String childTableName = this.toDialect.getWrapper().wrap(table.getTargetName());
+            String parentTableName = this.toDialect.getWrapper().wrap(parentTable.getTargetName());
 
-            StringBuilder equalSql = new StringBuilder(childTableName).append(POINT).append(table.getSourceParentId())
-                    .append(" = ").append(parentTableName).append(POINT).append(table.getSourceId());
+            StringBuilder equalSql = new StringBuilder(childTableName).append(POINT).append(table.getTargetOldParentId())
+                    .append(" = ").append(parentTableName).append(POINT).append(parentTable.getTargetOldId());
 
             // 更新子表中父表ID字段
-            StringBuilder sbChildUpdateSql = new StringBuilder("update ")
+            SqlBuilder sbChildUpdateSql = new SqlBuilder(this.toDialect.getWrapper())
+                    .append("update ")
                     .append(childTableName)
                     .append(" set ")
-                    .append(childTableName).append(POINT).append(table.getId())
+                    .append(childTableName).append(POINT).append(table.getTargetParentId())
                     .append(" = (select ")
-                    .append(parentTableName).append(parentTable.getId())
+                    .append(parentTableName).append(POINT).append(parentTable.getTargetId())
                     .append(" from ").append(parentTableName)
                     .append(" where ").append(equalSql)
-                    .append(") where ").append(childTableName).append(POINT).append(table.getId())
+                    .append(") where ").append(childTableName).append(POINT).append(table.getTargetParentId())
                     .append(" is null");
             log.debug("更新子表父表ID sql:{}", sbChildUpdateSql);
             this.toJdbcTemplate.execute(sbChildUpdateSql.toString());
@@ -195,7 +208,7 @@ public class DynamicTask implements Runnable {
                 // max(targetFieldName) as fieldName
                 .select(incrementalFieldList.stream().map(fieldDo -> "max(" + fieldDo.getTargetName() + ") as " + fieldDo.getName())
                         .collect(Collectors.toList()))
-                .from(table.getToName())
+                .from(table.getTargetName())
                 .build();
         // key: fieldName, value： max data
         List<Map<String, Object>> maps = toJdbcTemplate.queryForList(incrementalSQL);
@@ -232,7 +245,7 @@ public class DynamicTask implements Runnable {
             }
             final SuperSqlBuilder superSqlBuilder = SuperSqlBuilder.create();
             String insertBatchSql = superSqlBuilder.insertBatch(entityList, this.toDialect).build();
-            log.info("批量插入执行的SQL：{}, 参数：{}", insertBatchSql, superSqlBuilder.getPsAction());
+            log.debug("批量插入执行的SQL：{}, 参数：{}", insertBatchSql, superSqlBuilder.getPsAction());
             toJdbcTemplate.execute(insertBatchSql, superSqlBuilder.getPsAction());
             OpenCsvLog.info(this.taskName, "任务【{}】-【{}】第【{}】次执行成功", this.taskName, table.getName(), i);
         } catch (Exception e) {
@@ -257,7 +270,7 @@ public class DynamicTask implements Runnable {
         }
         final String queryByOldId = SqlBuilder.create(this.toDialect.getWrapper())
                 .select("* ")
-                .from(table.getToName())
+                .from(table.getTargetName())
                 .where(new Condition(table.getSourceId(), oldKeys))
                 .build();
         final List<Map<String, Object>> existData = this.toJdbcTemplate.queryForList(queryByOldId, oldKeys.toArray());
@@ -272,7 +285,7 @@ public class DynamicTask implements Runnable {
                             .findAny().orElse(null);
                     if (Objects.nonNull(dbData) && hasDifferent(entity, dbData)) {
                         // 添加新主键
-                        entity.set(table.getId(), dbData.get(table.getId()));
+                        entity.set(table.getTargetId(), dbData.get(table.getTargetId()));
                         // 有字段不一致，更新
                         needUpdate.add(entity);
                     }
@@ -299,7 +312,7 @@ public class DynamicTask implements Runnable {
                 .forEach(e -> {
                     e.setTableName(table.getName());
                     final SqlBuilder sqlBuilder = SqlBuilder.create(this.toDialect.getWrapper())
-                            .update(e).where(new Condition(table.getId(), e.get(table.getId())));
+                            .update(e).where(new Condition(table.getTargetId(), e.get(table.getTargetId())));
                     this.toJdbcTemplate.update(sqlBuilder.build(), sqlBuilder.getParamValueArray());
                 });
     }
@@ -326,7 +339,7 @@ public class DynamicTask implements Runnable {
     private List<Entity> processData(TableDo table, List<Map<String, Object>> dataList) {
         return dataList.stream()
                 .map(map -> {
-                    Entity entity = new Entity(table.getToName());
+                    Entity entity = new Entity(table.getTargetName());
                     // from 中存在的字段
                     map.forEach((fromKey, fromValue) -> {
                         FieldDo fieldFind = table.getFields().stream().filter(fieldDo ->
@@ -335,8 +348,7 @@ public class DynamicTask implements Runnable {
                                                 || StringUtils.endsWith(fieldDo.getName(), " " + fromKey))
                                 .findFirst().orElse(null);
                         if (Objects.isNull(fieldFind)) {
-                            throw new NullPointerException(
-                                    StrUtil.format("error field name, table-field:{}-{}", this.fromDo.getName(), fromKey));
+                            return;
                         }
 
                         // 将字段从前往后依次加工处理
@@ -370,19 +382,19 @@ public class DynamicTask implements Runnable {
         // 固定条件与增量条件之间是否添加 and
         boolean blnConditionAnd = StringUtils.isNotBlank(table.getWhereCondition()) && StringUtils.isNotBlank(incrementalCondition);
 
-        // 单表遍历 拼接 查询SQL
-        String selectSql = SqlBuilder.create(this.fromDialect.getWrapper())
-                // 元数据表字段名不能为空
-                .select(table.getFields().parallelStream().map(FieldDo::getName).filter(StringUtils::isNotEmpty).collect(Collectors.toList()))
-                .from(table.getName())
-                .where(table.getWhereCondition() + (blnConditionAnd ? " and " : "") + incrementalCondition)
-                .build()
-                + " limit {} offset {} ";
+        // 单表遍历 拼接 分页查询SQL
+        final String selectSql = this.fromDialect.wrapPageSql(SqlBuilder.create(this.fromDialect.getWrapper())
+                                // 元数据表字段名不能为空
+                                .select(table.getFields().parallelStream().map(FieldDo::getName).filter(StringUtils::isNotEmpty).collect(Collectors.toList()))
+                                .from(table.getName())
+                                .where(table.getWhereCondition() + (blnConditionAnd ? " and " : "") + incrementalCondition)
+                                // 必须有排序字段
+                                .orderBy(new Order(table.getSourceId()))
+                        , Page.of(i, ScheduledConstant.HANDLE_NUM))
+                .build();
 
         incrementalValues = Objects.isNull(incrementalValues) ? new ArrayList<>(4) : new ArrayList<>(incrementalValues);
 
-        incrementalValues.add(ScheduledConstant.HANDLE_NUM);
-        incrementalValues.add(i * ScheduledConstant.HANDLE_NUM);
         final String querySQL = StrUtil.format(selectSql, incrementalValues.toArray());
         log.info("查询原始数据SQL：{}", querySQL);
         return this.fromJdbcTemplate.queryForList(querySQL);

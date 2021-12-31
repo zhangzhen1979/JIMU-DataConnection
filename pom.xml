@@ -17,7 +17,7 @@
         <module>thinkdifferent-data-process</module>
         <module>thinkdifferent-data-schedule</module>
         <module>thinkdifferent-data-all</module>
-        <!--        <module>start</module>-->
+        <module>hutool-db</module>
     </modules>
 
     <properties>
@@ -32,7 +32,7 @@
         <guava.version>31.0.1-jre</guava.version>
         <commons.lang3.version>3.1</commons.lang3.version>
         <lombok.version>1.18.6</lombok.version>
-        <hutool.version>5.7.14</hutool.version>
+        <hutool.version>5.7.18</hutool.version>
         <xstream.version>1.4.10</xstream.version>
         <commons.io.version>2.7</commons.io.version>
         <validator.version>7.0.2.Final</validator.version>
@@ -40,7 +40,7 @@
 
     <dependencies>
         <dependency>
-<!--            TODO 待升级-->
+            <!--            TODO 待升级-->
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
             <version>2.6.1</version>
@@ -95,11 +95,6 @@
                 <groupId>com.thoughtworks.xstream</groupId>
                 <artifactId>xstream</artifactId>
                 <version>${xstream.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-all</artifactId>
-                <version>${hutool.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.thinkdifferent.data</groupId>

@@ -16,7 +16,7 @@ public enum DataSourceType {
     // 未知的数据库类型
     UNKNOWN,
     MYSQL,
-
+    POSTGRES,
     ;
 
     @Deprecated
@@ -32,6 +32,8 @@ public enum DataSourceType {
 
     private static final HashMap<String, DataSourceType> MAP_DRIVER_TYPES = new HashMap() {{
         put("com.mysql.cj.jdbc.Driver", MYSQL);
+        put("org.postgresql.Driver", POSTGRES);
+        put("com.microsoft.sqlserver.jdbc.SQLServerDriver", POSTGRES);
     }};
 
     /**

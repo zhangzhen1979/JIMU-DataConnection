@@ -2,14 +2,12 @@ package com.thinkdifferent.data.process;
 
 import com.ql.util.express.DefaultContext;
 import com.ql.util.express.ExpressRunner;
-import com.thinkdifferent.data.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-
 /**
  * 表达式计算
+ *
  * @author ltian
  * @version 1.0
  * @date 2021/10/26 14:29

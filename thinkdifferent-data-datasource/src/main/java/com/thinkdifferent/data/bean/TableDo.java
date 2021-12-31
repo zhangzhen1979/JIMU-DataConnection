@@ -18,23 +18,70 @@ import java.util.List;
 @Accessors(chain = true)
 public class TableDo {
     /**
-     * 表名
+     * 源表名字
      */
     @NotNull(message = "源表名字段未配置")
     @JacksonXmlProperty(isAttribute = true)
     private String name;
+
     /**
-     * ID 字段
+     * 源表中ID字段
      */
-    @NotNull(message = "表ID字段未配置")
+    @NotNull(message = "原ID名字段未配置")
     @JacksonXmlProperty(isAttribute = true)
-    private String id;
+    private String sourceId;
+
+
+
+    /**
+     * 源表查询条件
+     */
+    @JacksonXmlProperty(isAttribute = true)
+    private String whereCondition;
+
+    /*-------------------------以上为源表数据---------------------------*/
+    /*-------------------------以下为目标表数据---------------------------*/
+
     /**
      * 目标表名
      */
     @NotNull(message = "目标表名字段未配置")
     @JacksonXmlProperty(isAttribute = true)
-    private String toName;
+    private String targetName;
+    /**
+     * 目标表 ID 字段
+     */
+    @NotNull(message = "目标表ID字段未配置")
+    @JacksonXmlProperty(isAttribute = true)
+    private String targetId;
+    /**
+     * 目标表中旧ID字段
+     */
+    @NotNull(message = "目标表中旧ID字段未配置")
+    @JacksonXmlProperty(isAttribute = true)
+    private String targetOldId;
+    /**
+     * 目标库中， 子表中，父表ID字段（pid）
+     */
+    @JacksonXmlProperty(isAttribute = true)
+    private String targetParentId;
+    /**
+     * 目标库中， 子表中，旧父表ID字段（oldpid）
+     */
+    @JacksonXmlProperty(isAttribute = true)
+    private String targetOldParentId;
+    /**
+     * 目标库父表表名
+     */
+    @JacksonXmlProperty(isAttribute = true)
+    private String parentTable;
+    /*-------------------------以上为目标表数据---------------------------*/
+    /*-------------------------以下为其他配置---------------------------*/
+    /**
+     * 是否更新旧数据
+     */
+    @JacksonXmlProperty(isAttribute = true)
+    private Boolean blnUpdateData;
     /**
      * 字段
      */
@@ -43,31 +90,4 @@ public class TableDo {
     @JacksonXmlElementWrapper(localName = "fields")
     @JacksonXmlProperty(localName = "field")
     private List<FieldDo> fields;
-    /**
-     * 条件
-     */
-    @JacksonXmlProperty(isAttribute = true)
-    private String whereCondition;
-
-    /**
-     * 源表中ID字段
-     */
-    @NotNull(message = "原ID名字段未配置")
-    @JacksonXmlProperty(isAttribute = true)
-    private String sourceId;
-    /**
-     * 父表表名
-     */
-    @JacksonXmlProperty(isAttribute = true)
-    private String parentTable;
-    /**
-     * 子表中父表源ID字段
-     */
-    @JacksonXmlProperty(isAttribute = true)
-    private String sourceParentId;
-    /**
-     * 是否更新旧数据
-     */
-    @JacksonXmlProperty(isAttribute = true)
-    private Boolean blnUpdateData;
 }

@@ -27,5 +27,11 @@
             <artifactId>thinkdifferent-data-process</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.thinkdifferent.hutool.db</groupId>
+            <artifactId>hutool-db</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>
