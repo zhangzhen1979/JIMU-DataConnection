@@ -10,7 +10,6 @@
  out/
  .idea_modules/
  atlassian-ide-plugin.xml
- .idea/replstate.xml
  .DS_Store
 
 # Crashlytics plugin (for Android Studio and IntelliJ)

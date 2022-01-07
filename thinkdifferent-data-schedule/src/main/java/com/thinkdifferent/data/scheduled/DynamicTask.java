@@ -16,6 +16,7 @@ import com.thinkdifferent.data.constant.ScheduledConstant;
 import com.thinkdifferent.data.controller.bean.PushData;
 import com.thinkdifferent.data.csvLog.OpenCsvLog;
 import com.thinkdifferent.data.datasource.DataSourceManager;
+import com.thinkdifferent.data.extend.OneTableExtend;
 import com.thinkdifferent.data.process.DataHandlerEntity;
 import com.thinkdifferent.data.process.DataHandlerType;
 import com.thinkdifferent.data.util.SuperSqlBuilder;
@@ -84,6 +85,10 @@ public class DynamicTask implements Runnable {
         OpenCsvLog.info(this.taskName, "任务【{}】定时同步开始执行", this.taskName);
         this.taskDo.getTables().parallelStream()
                 .forEach(table->{
+                    // TODO 待修改
+                    OneTableExtend oneTableExtend = new OneTableExtend(this.taskDo, table);
+
+
                     int i = 0;
                     // 原数据
                     List<Map<String, Object>> dataList;
