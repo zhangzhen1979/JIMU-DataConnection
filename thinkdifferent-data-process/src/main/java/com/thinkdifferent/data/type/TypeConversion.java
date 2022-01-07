@@ -1,6 +1,10 @@
 package com.thinkdifferent.data.type;
 
+import com.thinkdifferent.data.util.CommonUtil;
 import org.apache.commons.lang3.StringUtils;
+
+import java.math.BigDecimal;
+import java.time.LocalTime;
 
 /**
  * @author ltian
@@ -22,10 +26,14 @@ public enum TypeConversion {
     INT(Integer::valueOf),
     DOUBLE(Double::valueOf),
     FLOAT(Float::valueOf),
+    DECIMAL(BigDecimal::new),
     /**
-     * TODO 日期相关
+     * 日期相关
      */
-
+    DATETIME(CommonUtil::parseDate),
+    DATE(CommonUtil::parseDate),
+    TIMESTAMP(CommonUtil::parseDate),
+    TIME(LocalTime::parse),
     ;
 
     private final Conversion conversion;
