@@ -57,7 +57,7 @@ public class DialectFactory implements DriverNamePool{
 			} else if (DRIVER_H2.equalsIgnoreCase(driverName)) {
 				return new H2Dialect();
 			} else if (DRIVER_SQLSERVER.equalsIgnoreCase(driverName)) {
-				// TODO 发布时要改回来，想要支持2008要定制
+				// 政府部门采购多为2008版本
 				// return new SqlServer2012Dialect();
 				return new SqlServer2008Dialect();
 			} else if (DRIVER_PHOENIX.equalsIgnoreCase(driverName)) {

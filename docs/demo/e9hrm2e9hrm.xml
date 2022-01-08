@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task cron="0 0/2 * * * ? " blnRunning="true">
+    <from name="db1">
+        <properties>
+            <driver-class-name>com.mysql.cj.jdbc.Driver</driver-class-name>
+            <url>jdbc:mysql://192.168.2.250:3306/ecology_base?serverTimezone=UTC</url>
+            <username>ecology</username>
+            <password>Weaver_2021</password>
+        </properties>
+    </from>
+    <to name="db2">
+        <properties>
+            <name>to</name>
+            <driver-class-name>com.mysql.cj.jdbc.Driver</driver-class-name>
+            <url>jdbc:mysql://192.168.2.250:3306/ecology?serverTimezone=UTC</url>
+            <username>ecology</username>
+            <password>Weaver_2021</password>
+        </properties>
+    </to>
+    <tables>
+        <table name="hrmresource" sourceId="ID" whereCondition=" "
+               targetName="hrmresource" targetId="id" targetOldId="id"
+        >
+            <fields>
+                <field name="ID" type="int" targetName="ID" targetType="int"  incrementalField="true"/>
+                <field name="LOGINID" type="varchar" targetName="LOGINID" targetType="varchar" />
+                <field name="PASSWORD" type="varchar" targetName="PASSWORD" targetType="varchar" />
+                <field name="LASTNAME" type="varchar" targetName="LASTNAME" targetType="varchar" />
+                <field name="SEX" type="char" targetName="SEX" targetType="char" />
+                <field name="BIRTHDAY" type="char" targetName="BIRTHDAY" targetType="char" />
+                <field name="NATIONALITY" type="int" targetName="NATIONALITY" targetType="int" />
+                <field name="SYSTEMLANGUAGE" type="int" targetName="SYSTEMLANGUAGE" targetType="int" />
+                <field name="MARITALSTATUS" type="char" targetName="MARITALSTATUS" targetType="char" />
+                <field name="TELEPHONE" type="varchar" targetName="TELEPHONE" targetType="varchar" />
+                <field name="MOBILE" type="varchar" targetName="MOBILE" targetType="varchar" />
+                <field name="MOBILECALL" type="varchar" targetName="MOBILECALL" targetType="varchar" />
+                <field name="EMAIL" type="varchar" targetName="EMAIL" targetType="varchar" />
+                <field name="LOCATIONID" type="int" targetName="LOCATIONID" targetType="int" />
+                <field name="WORKROOM" type="varchar" targetName="WORKROOM" targetType="varchar" />
+                <field name="HOMEADDRESS" type="varchar" targetName="HOMEADDRESS" targetType="varchar" />
+                <field name="RESOURCETYPE" type="char" targetName="RESOURCETYPE" targetType="char" />
+                <field name="STARTDATE" type="char" targetName="STARTDATE" targetType="char" />
+                <field name="ENDDATE" type="char" targetName="ENDDATE" targetType="char" />
+                <field name="JOBTITLE" type="int" targetName="JOBTITLE" targetType="int" />
+                <field name="JOBACTIVITYDESC" type="varchar" targetName="JOBACTIVITYDESC" targetType="varchar" />
+                <field name="JOBLEVEL" type="int" targetName="JOBLEVEL" targetType="int" />
+                <field name="SECLEVEL" type="int" targetName="SECLEVEL" targetType="int" />
+                <field name="DEPARTMENTID" type="int" targetName="DEPARTMENTID" targetType="int" />
+                <field name="SUBCOMPANYID1" type="int" targetName="SUBCOMPANYID1" targetType="int" />
+                <field name="COSTCENTERID" type="int" targetName="COSTCENTERID" targetType="int" />
+                <field name="MANAGERID" type="int" targetName="MANAGERID" targetType="int" />
+                <field name="ASSISTANTID" type="int" targetName="ASSISTANTID" targetType="int" />
+                <field name="BANKID1" type="int" targetName="BANKID1" targetType="int" />
+                <field name="ACCOUNTID1" type="varchar" targetName="ACCOUNTID1" targetType="varchar" />
+                <field name="RESOURCEIMAGEID" type="int" targetName="RESOURCEIMAGEID" targetType="int" />
+                <field name="CREATERID" type="int" targetName="CREATERID" targetType="int" />
+                <field name="CREATEDATE" type="char" targetName="CREATEDATE" targetType="char" />
+                <field name="LASTMODID" type="int" targetName="LASTMODID" targetType="int" />
+                <field name="LASTMODDATE" type="char" targetName="LASTMODDATE" targetType="char" />
+                <field name="LASTLOGINDATE" type="char" targetName="LASTLOGINDATE" targetType="char" />
+                <field name="DATEFIELD1" type="varchar" targetName="DATEFIELD1" targetType="varchar" />
+                <field name="DATEFIELD2" type="varchar" targetName="DATEFIELD2" targetType="varchar" />
+                <field name="DATEFIELD3" type="varchar" targetName="DATEFIELD3" targetType="varchar" />
+                <field name="DATEFIELD4" type="varchar" targetName="DATEFIELD4" targetType="varchar" />
+                <field name="DATEFIELD5" type="varchar" targetName="DATEFIELD5" targetType="varchar" />
+                <field name="NUMBERFIELD1" type="double" targetName="NUMBERFIELD1" targetType="double" />
+                <field name="NUMBERFIELD2" type="double" targetName="NUMBERFIELD2" targetType="double" />
+                <field name="NUMBERFIELD3" type="double" targetName="NUMBERFIELD3" targetType="double" />
+                <field name="NUMBERFIELD4" type="double" targetName="NUMBERFIELD4" targetType="double" />
+                <field name="NUMBERFIELD5" type="double" targetName="NUMBERFIELD5" targetType="double" />
+                <field name="TEXTFIELD1" type="varchar" targetName="TEXTFIELD1" targetType="varchar" />
+                <field name="TEXTFIELD2" type="varchar" targetName="TEXTFIELD2" targetType="varchar" />
+                <field name="TEXTFIELD3" type="varchar" targetName="TEXTFIELD3" targetType="varchar" />
+                <field name="TEXTFIELD4" type="varchar" targetName="TEXTFIELD4" targetType="varchar" />
+                <field name="TEXTFIELD5" type="varchar" targetName="TEXTFIELD5" targetType="varchar" />
+                <field name="TINYINTFIELD1" type="int" targetName="TINYINTFIELD1" targetType="int" />
+                <field name="TINYINTFIELD2" type="int" targetName="TINYINTFIELD2" targetType="int" />
+                <field name="TINYINTFIELD3" type="int" targetName="TINYINTFIELD3" targetType="int" />
+                <field name="TINYINTFIELD4" type="int" targetName="TINYINTFIELD4" targetType="int" />
+                <field name="TINYINTFIELD5" type="int" targetName="TINYINTFIELD5" targetType="int" />
+                <field name="CERTIFICATENUM" type="varchar" targetName="CERTIFICATENUM" targetType="varchar" />
+                <field name="NATIVEPLACE" type="varchar" targetName="NATIVEPLACE" targetType="varchar" />
+                <field name="EDUCATIONLEVEL" type="int" targetName="EDUCATIONLEVEL" targetType="int" />
+                <field name="BEMEMBERDATE" type="char" targetName="BEMEMBERDATE" targetType="char" />
+                <field name="BEPARTYDATE" type="char" targetName="BEPARTYDATE" targetType="char" />
+                <field name="WORKCODE" type="varchar" targetName="WORKCODE" targetType="varchar" />
+                <field name="REGRESIDENTPLACE" type="varchar" targetName="REGRESIDENTPLACE" targetType="varchar" />
+                <field name="HEALTHINFO" type="char" targetName="HEALTHINFO" targetType="char" />
+                <field name="RESIDENTPLACE" type="varchar" targetName="RESIDENTPLACE" targetType="varchar" />
+                <field name="POLICY" type="varchar" targetName="POLICY" targetType="varchar" />
+                <field name="DEGREE" type="varchar" targetName="DEGREE" targetType="varchar" />
+                <field name="HEIGHT" type="varchar" targetName="HEIGHT" targetType="varchar" />
+                <field name="USEKIND" type="int" targetName="USEKIND" targetType="int" />
+                <field name="JOBCALL" type="int" targetName="JOBCALL" targetType="int" />
+                <field name="ACCUMFUNDACCOUNT" type="varchar" targetName="ACCUMFUNDACCOUNT" targetType="varchar" />
+                <field name="BIRTHPLACE" type="varchar" targetName="BIRTHPLACE" targetType="varchar" />
+                <field name="FOLK" type="varchar" targetName="FOLK" targetType="varchar" />
+                <field name="RESIDENTPHONE" type="varchar" targetName="RESIDENTPHONE" targetType="varchar" />
+                <field name="RESIDENTPOSTCODE" type="varchar" targetName="RESIDENTPOSTCODE" targetType="varchar" />
+                <field name="EXTPHONE" type="varchar" targetName="EXTPHONE" targetType="varchar" />
+                <field name="MANAGERSTR" type="varchar" targetName="MANAGERSTR" targetType="varchar" />
+                <field name="STATUS" type="int" targetName="STATUS" targetType="int" />
+                <field name="FAX" type="varchar" targetName="FAX" targetType="varchar" />
+                <field name="ISLABOUUNION" type="char" targetName="ISLABOUUNION" targetType="char" />
+                <field name="WEIGHT" type="int" targetName="WEIGHT" targetType="int" />
+                <field name="TEMPRESIDENTNUMBER" type="varchar" targetName="TEMPRESIDENTNUMBER" targetType="varchar" />
+                <field name="PROBATIONENDDATE" type="char" targetName="PROBATIONENDDATE" targetType="char" />
+                <field name="COUNTRYID" type="int" targetName="COUNTRYID" targetType="int" />
+                <field name="PASSWDCHGDATE" type="char" targetName="PASSWDCHGDATE" targetType="char" />
+                <field name="NEEDUSB" type="int" targetName="NEEDUSB" targetType="int" />
+                <field name="SERIAL" type="varchar" targetName="SERIAL" targetType="varchar" />
+                <field name="ACCOUNT" type="varchar" targetName="ACCOUNT" targetType="varchar" />
+                <field name="LLOGINID" type="varchar" targetName="LLOGINID" targetType="varchar" />
+                <field name="NEEDDYNAPASS" type="int" targetName="NEEDDYNAPASS" targetType="int" />
+                <field name="DSPORDER" type="double" targetName="DSPORDER" targetType="double" />
+                <field name="PASSWORDSTATE" type="int" targetName="PASSWORDSTATE" targetType="int" />
+                <field name="ACCOUNTTYPE" type="int" targetName="ACCOUNTTYPE" targetType="int" />
+                <field name="BELONGTO" type="int" targetName="BELONGTO" targetType="int" />
+                <field name="DACTYLOGRAM" type="text" targetName="DACTYLOGRAM" targetType="text" />
+                <field name="ASSISTANTDACTYLOGRAM" type="text" targetName="ASSISTANTDACTYLOGRAM" targetType="text" />
+                <field name="PASSWORDLOCK" type="int" targetName="PASSWORDLOCK" targetType="int" />
+                <field name="SUMPASSWORDWRONG" type="int" targetName="SUMPASSWORDWRONG" targetType="int" />
+                <field name="OLDPASSWORD1" type="varchar" targetName="OLDPASSWORD1" targetType="varchar" />
+                <field name="OLDPASSWORD2" type="varchar" targetName="OLDPASSWORD2" targetType="varchar" />
+                <field name="MSGSTYLE" type="varchar" targetName="MSGSTYLE" targetType="varchar" />
+                <field name="MESSAGERURL" type="varchar" targetName="MESSAGERURL" targetType="varchar" />
+                <field name="pinyinlastname" type="varchar" targetName="pinyinlastname" targetType="varchar" />
+                <field name="TOKENKEY" type="varchar" targetName="TOKENKEY" targetType="varchar" />
+                <field name="USERUSBTYPE" type="varchar" targetName="USERUSBTYPE" targetType="varchar" />
+                <field name="OUTKEY" type="varchar" targetName="OUTKEY" targetType="varchar" />
+                <field name="ADSJGS" type="varchar" targetName="ADSJGS" targetType="varchar" />
+                <field name="ADGS" type="varchar" targetName="ADGS" targetType="varchar" />
+                <field name="ADBM" type="varchar" targetName="ADBM" targetType="varchar" />
+                <field name="MOBILESHOWTYPE" type="int" targetName="MOBILESHOWTYPE" targetType="int" />
+                <field name="USBSTATE" type="int" targetName="USBSTATE" targetType="int" />
+                <field name="TOTALSPACE" type="double" targetName="TOTALSPACE" targetType="double" />
+                <field name="OCCUPYSPACE" type="double" targetName="OCCUPYSPACE" targetType="double" />
+                <field name="ECOLOGY_PINYIN_SEARCH" type="varchar" targetName="ECOLOGY_PINYIN_SEARCH" targetType="varchar" />
+                <field name="ISADACCOUNT" type="char" targetName="ISADACCOUNT" targetType="char" />
+                <field name="ACCOUNTNAME" type="varchar" targetName="ACCOUNTNAME" targetType="varchar" />
+                <field name="haschangepwd" type="varchar" targetName="haschangepwd" targetType="varchar" />
+                <field name="created" type="datetime" targetName="created" targetType="datetime" />
+                <field name="creater" type="int" targetName="creater" targetType="int" />
+                <field name="modified" type="datetime" targetName="modified" targetType="datetime" />
+                <field name="modifier" type="int" targetName="modifier" targetType="int" />
+                <field name="passwordlocktime" type="datetime" targetName="passwordlocktime" targetType="datetime" />
+                <field name="mobilecaflag" type="varchar" targetName="mobilecaflag" targetType="varchar" />
+                <field name="salt" type="varchar" targetName="salt" targetType="varchar" />
+                <field name="companystartdate" type="varchar" targetName="companystartdate" targetType="varchar" />
+                <field name="workstartdate" type="varchar" targetName="workstartdate" targetType="varchar" />
+                <field name="secondaryPwd" type="varchar" targetName="secondaryPwd" targetType="varchar" />
+                <field name="useSecondaryPwd" type="int" targetName="useSecondaryPwd" targetType="int" />
+                <field name="classification" type="char" targetName="classification" targetType="char" />
+                <field name="uuid" type="varchar" targetName="uuid" targetType="varchar" />
+                <field name="passwordLockReason" type="varchar" targetName="passwordLockReason" targetType="varchar" />
+                <field name="companyworkyear" type="decimal" targetName="companyworkyear" targetType="decimal" />
+                <field name="workyear" type="decimal" targetName="workyear" targetType="decimal" />
+                <field name="DISMISSDATE" type="varchar" targetName="DISMISSDATE" targetType="varchar" />
+                <field name="encKey" type="varchar" targetName="encKey" targetType="varchar" />
+                <field name="crc" type="varchar" targetName="crc" targetType="varchar" />
+                <field name="usbscope" type="int" targetName="usbscope" targetType="int" />
+            </fields>
+        </table>
+        <table name="hrmdepartment" sourceId="id" whereCondition=" "
+               targetName="hrmdepartment" targetId="id"  targetOldId="id"
+        >
+            <fields>
+                <field name="id" type="int" targetName="id" targetType="int"  incrementalField="true"/>
+                <field name="DEPARTMENTMARK" type="varchar" targetName="DEPARTMENTMARK" targetType="varchar" />
+                <field name="DEPARTMENTNAME" type="varchar" targetName="DEPARTMENTNAME" targetType="varchar" />
+                <field name="SUBCOMPANYID1" type="int" targetName="SUBCOMPANYID1" targetType="int" />
+                <field name="SUPDEPID" type="int" targetName="SUPDEPID" targetType="int" />
+                <field name="ALLSUPDEPID" type="text" targetName="ALLSUPDEPID" targetType="text" />
+                <field name="CANCELED" type="char" targetName="CANCELED" targetType="char" />
+                <field name="DEPARTMENTCODE" type="varchar" targetName="DEPARTMENTCODE" targetType="varchar" />
+                <field name="COADJUTANT" type="int" targetName="COADJUTANT" targetType="int" />
+                <field name="ZZJGBMFZR" type="text" targetName="ZZJGBMFZR" targetType="text" />
+                <field name="ZZJGBMFGLD" type="text" targetName="ZZJGBMFGLD" targetType="text" />
+                <field name="JZGLBMFZR" type="text" targetName="JZGLBMFZR" targetType="text" />
+                <field name="JZGLBMFGLD" type="text" targetName="JZGLBMFGLD" targetType="text" />
+                <field name="BMFZR" type="text" targetName="BMFZR" targetType="text" />
+                <field name="BMFGLD" type="text" targetName="BMFGLD" targetType="text" />
+                <field name="OUTKEY" type="varchar" targetName="OUTKEY" targetType="varchar" />
+                <field name="BUDGETATUOMOVEORDER" type="int" targetName="BUDGETATUOMOVEORDER" targetType="int" />
+                <field name="ECOLOGY_PINYIN_SEARCH" type="varchar" targetName="ECOLOGY_PINYIN_SEARCH" targetType="varchar" />
+                <field name="TLEVEL" type="int" targetName="TLEVEL" targetType="int" />
+                <field name="created" type="datetime" targetName="created" targetType="datetime" />
+                <field name="creater" type="int" targetName="creater" targetType="int" />
+                <field name="modified" type="datetime" targetName="modified" targetType="datetime" />
+                <field name="modifier" type="int" targetName="modifier" targetType="int" />
+                <field name="uuid" type="varchar" targetName="uuid" targetType="varchar" />
+                <field name="showorder" type="double" targetName="showorder" targetType="double" />
+                <field name="showOrderOfTree" type="int" targetName="showOrderOfTree" targetType="int" />
+
+            </fields>
+        </table>
+        <table name="hrmsubcompany" sourceId="id" whereCondition=" "
+               targetName="hrmsubcompany" targetId="id"  targetOldId="id"
+        >
+            <fields>
+                <field name="id" type="int" targetName="id" targetType="int" incrementalField="true"/>
+                <field name="SUBCOMPANYNAME" type="varchar" targetName="SUBCOMPANYNAME" targetType="varchar" />
+                <field name="SUBCOMPANYDESC" type="varchar" targetName="SUBCOMPANYDESC" targetType="varchar" />
+                <field name="COMPANYID" type="int" targetName="COMPANYID" targetType="int" />
+                <field name="SUPSUBCOMID" type="int" targetName="SUPSUBCOMID" targetType="int" />
+                <field name="URL" type="varchar" targetName="URL" targetType="varchar" />
+                <field name="CANCELED" type="char" targetName="CANCELED" targetType="char" />
+                <field name="SUBCOMPANYCODE" type="varchar" targetName="SUBCOMPANYCODE" targetType="varchar" />
+                <field name="OUTKEY" type="varchar" targetName="OUTKEY" targetType="varchar" />
+                <field name="BUDGETATUOMOVEORDER" type="int" targetName="BUDGETATUOMOVEORDER" targetType="int" />
+                <field name="ECOLOGY_PINYIN_SEARCH" type="varchar" targetName="ECOLOGY_PINYIN_SEARCH" targetType="varchar" />
+                <field name="LIMITUSERS" type="int" targetName="LIMITUSERS" targetType="int" />
+                <field name="TLEVEL" type="int" targetName="TLEVEL" targetType="int" />
+                <field name="created" type="datetime" targetName="created" targetType="datetime" />
+                <field name="creater" type="int" targetName="creater" targetType="int" />
+                <field name="modified" type="datetime" targetName="modified" targetType="datetime" />
+                <field name="modifier" type="int" targetName="modifier" targetType="int" />
+                <field name="uuid" type="varchar" targetName="uuid" targetType="varchar" />
+                <field name="showorder" type="double" targetName="showorder" targetType="double" />
+                <field name="showOrderOfTree" type="int" targetName="showOrderOfTree" targetType="int" />
+            </fields>
+        </table>
+
+    </tables>
+</task>

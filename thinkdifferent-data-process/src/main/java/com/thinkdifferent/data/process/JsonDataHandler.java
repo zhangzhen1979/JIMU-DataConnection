@@ -1,9 +1,7 @@
 package com.thinkdifferent.data.process;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import com.thinkdifferent.data.constants.ProcessConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
