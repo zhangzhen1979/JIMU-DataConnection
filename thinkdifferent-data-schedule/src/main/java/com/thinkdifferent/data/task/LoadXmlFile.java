@@ -177,9 +177,9 @@ public class LoadXmlFile implements Closeable {
      */
     @Override
     public void close() {
-        System.out.println("-----------------------");
-        System.out.println(MAP_SUCCESS_TASKS);
-        MAP_SUCCESS_TASKS.keySet().forEach(this::removeTask);
+        if (!MAP_SUCCESS_TASKS.isEmpty()){
+            MAP_SUCCESS_TASKS.keySet().forEach(this::removeTask);
+        }
     }
 
     /**
