@@ -160,5 +160,5 @@ public interface Dialect extends Serializable {
 	 * @return 分页语句
 	 * @since 3.2.3
 	 */
-	public SqlBuilder wrapPageSql(SqlBuilder find, Page page);
+	SqlBuilder wrapPageSql(SqlBuilder find, Page page);
 }

@@ -50,6 +50,11 @@ public enum DataHandlerType {
      * @see DictHandler
      */
     DICT,
+    /**
+     * 文件处理
+     * @see DefaultFileHandler
+     */
+    FILE,
     ;
 
     public static DataHandlerType getRespType(String input) {

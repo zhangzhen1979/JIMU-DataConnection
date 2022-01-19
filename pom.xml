@@ -12,7 +12,7 @@
 
 
     <modules>
-        <module>thinkdifferent-data-pom</module>
+        <module>thinkdifferent-data-bean</module>
         <module>thinkdifferent-data-datasource</module>
         <module>thinkdifferent-data-process</module>
         <module>thinkdifferent-data-schedule</module>
@@ -21,7 +21,7 @@
     </modules>
 
     <properties>
-        <revision>0.5</revision>
+        <revision>0.6</revision>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -36,6 +36,7 @@
         <xstream.version>1.4.10</xstream.version>
         <commons.io.version>2.7</commons.io.version>
         <validator.version>7.0.2.Final</validator.version>
+        <jackson.version>2.10.1</jackson.version>
     </properties>
 
     <dependencies>
@@ -97,14 +98,14 @@
                 <version>${xstream.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.thinkdifferent.data</groupId>
-                <artifactId>thinkdifferent-data-pom</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons.io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-xml</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

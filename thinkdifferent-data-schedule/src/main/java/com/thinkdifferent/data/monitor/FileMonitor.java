@@ -2,6 +2,7 @@ package com.thinkdifferent.data.monitor;
 
 import cn.hutool.core.util.StrUtil;
 import com.thinkdifferent.data.constant.ScheduledConstant;
+import com.thinkdifferent.data.datasource.SmartDataSourceManager;
 import com.thinkdifferent.data.task.LoadXmlFile;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -37,6 +38,8 @@ public class FileMonitor {
      */
     private static final Integer INT_MONITOR_TIME = 10;
     private FileAlterationMonitor fileMonitor;
+    @Resource
+    private LoadXmlFile loadXmlFile;
 
     public void initFileMonitor() {
         String filePath = System.getProperty(SYSTEM_FILE_PATH_KEY);
@@ -65,6 +68,7 @@ public class FileMonitor {
         try {
             fileMonitor.stop();
             loadXmlFile.close();
+            SmartDataSourceManager.close();
         } catch (Exception e) {
             log.error("stop file monitor error", e);
         }
@@ -142,7 +146,4 @@ public class FileMonitor {
             return children;
         }
     }
-
-    @Resource
-    private LoadXmlFile loadXmlFile;
 }

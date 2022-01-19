@@ -2,17 +2,16 @@ package com.thinkdifferent.data.task;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.db.dialect.DialectFactory;
-import com.thinkdifferent.data.bean.FromDo;
+import com.thinkdifferent.data.bean.TableDo;
 import com.thinkdifferent.data.bean.TaskDo;
-import com.thinkdifferent.data.bean.ToDo;
-import com.thinkdifferent.data.cache.DictDataCache;
-import com.thinkdifferent.data.controller.bean.PushData;
-import com.thinkdifferent.data.controller.bean.RespData;
-import com.thinkdifferent.data.datasource.DataSourceManager;
+import com.thinkdifferent.data.extend.OneTableExtend;
+import com.thinkdifferent.data.rest.PushData;
+import com.thinkdifferent.data.rest.RespData;
+import com.thinkdifferent.data.datasource.SmartDataSourceManager;
 import com.thinkdifferent.data.process.DataHandlerType;
 import com.thinkdifferent.data.scheduled.CronTaskRegistrar;
 import com.thinkdifferent.data.scheduled.DynamicTask;
+import com.thinkdifferent.data.service.DictService;
 import com.thinkdifferent.data.util.XmlUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +20,6 @@ import org.springframework.scheduling.config.CronTask;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.sql.DataSource;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -29,10 +27,7 @@ import javax.validation.groups.Default;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.thinkdifferent.data.constants.ProcessConstant.Punctuation.COMMA;
@@ -46,15 +41,16 @@ import static com.thinkdifferent.data.constants.ProcessConstant.Punctuation.POIN
 @Slf4j
 @Component
 public class LoadXmlFile implements Closeable {
-    @Resource
-    private CronTaskRegistrar cronTaskRegistrar;
-
     /**
      * 当前加载的任务数据
      * <li>key : filePath</li>
      * <li>value : taskDo</li>
      */
     private static final Map<String, TaskDo> MAP_SUCCESS_TASKS = new HashMap<>();
+    @Resource
+    private CronTaskRegistrar cronTaskRegistrar;
+    @Resource
+    private DictService dictService;
 
     /**
      * 加载单个xml文件
@@ -68,7 +64,7 @@ public class LoadXmlFile implements Closeable {
             if (taskDo == null) return;
 
             // 2. 加载字典表
-            DictDataCache.loadDictionary(taskDo);
+            dictService.loadDictionary(taskDo);
 
             // 3. 记录已加载的配置信息, 加入定时任务
             MAP_SUCCESS_TASKS.put(oneXmlFilePath, taskDo);
@@ -98,21 +94,6 @@ public class LoadXmlFile implements Closeable {
             removeTask(oneXmlFilePath);
             return null;
         }
-        // 2. 加载配置信息
-        DataSourceManager.loadDataSource(taskDo);
-
-        // 2.1 设置数据源类型
-        FromDo from = taskDo.getFrom();
-        if (Boolean.FALSE.equals(from.getBlnRestReceive())) {
-            DataSource fromDatasource = DataSourceManager.getDataSourceByName(taskDo.getName(), from.getName());
-            // 数据库方言
-            from.setDbDialect(DialectFactory.newDialect(Objects.requireNonNull(fromDatasource)));
-        }
-
-        ToDo toDo = taskDo.getTo();
-        DataSource toDatasource = DataSourceManager.getDataSourceByName(taskDo.getName(), toDo.getName());
-        toDo.setDbDialect(DialectFactory.newDialect(Objects.requireNonNull(toDatasource)));
-        taskDo.setFrom(from).setTo(toDo);
         // 1.2 字典类配置添加 taskName、 fromName
         if (CollectionUtil.isNotEmpty(taskDo.getTables())) {
             taskDo.getTables().stream()
@@ -120,9 +101,11 @@ public class LoadXmlFile implements Closeable {
                     .forEach(tableDo -> tableDo.getFields().stream()
                             .filter(fieldDo -> StringUtils.equalsIgnoreCase(DataHandlerType.DICT.name(), fieldDo.getType()))
                             // [taskName].[fromName].[dictTableName].[codeField]
-                            .forEach(fieldDo -> fieldDo.setHandleExpress(taskDo.getName() + POINT + from.getName() +
-                                    POINT + fieldDo.getHandleExpress())));
+                            .forEach(fieldDo -> fieldDo.setHandleExpress(taskDo.getName() + POINT + taskDo.getFrom().getName()
+                                    + POINT + fieldDo.getHandleExpress())));
         }
+        // 2. 加载配置信息
+        SmartDataSourceManager.loadDataSource(taskDo);
         return taskDo;
     }
 
@@ -153,16 +136,24 @@ public class LoadXmlFile implements Closeable {
         if (Objects.isNull(taskDo)) {
             return;
         }
+        _removeTask(taskDo);
+
+        // 移除加载的任务
+        MAP_SUCCESS_TASKS.remove(filePath);
+    }
+
+    /**
+     * 停止任务、移除字段配置、断开链接
+     * @param taskDo 任务对象
+     */
+    private void _removeTask(TaskDo taskDo) {
         // 倒叙移除， 1.停止任务
         cronTaskRegistrar.removeCronTask(new CronTask(new DynamicTask(taskDo), taskDo.getCron()).getRunnable());
 
         // 2. 移除字典配置
-        DictDataCache.loadOffDictionary(taskDo);
+        dictService.loadOffDictionary(taskDo);
         // 3. 断开数据库连接
-        DataSourceManager.loadOffDataSources(taskDo);
-
-        // 移除加载的任务
-        MAP_SUCCESS_TASKS.remove(filePath);
+        SmartDataSourceManager.close(taskDo);
     }
 
     /**
@@ -177,8 +168,11 @@ public class LoadXmlFile implements Closeable {
      */
     @Override
     public void close() {
-        if (!MAP_SUCCESS_TASKS.isEmpty()){
-            MAP_SUCCESS_TASKS.keySet().forEach(this::removeTask);
+        Iterator<Map.Entry<String, TaskDo>> it = MAP_SUCCESS_TASKS.entrySet().iterator();
+        while(it.hasNext()){
+            Map.Entry<String, TaskDo> next = it.next();
+            this._removeTask(next.getValue());
+            it.remove();
         }
     }
 
@@ -188,15 +182,19 @@ public class LoadXmlFile implements Closeable {
      * @param pushData 接收到的数据
      * @return bln
      */
-    public RespData checkAndDealData(PushData pushData) {
+    public RespData<Object> checkAndDealData(PushData pushData) {
         if (pushData.getData().isEmpty()) {
             throw new RuntimeException("传入数据为空！");
         }
         TaskDo taskDo = MAP_SUCCESS_TASKS.values().stream()
                 .filter(task -> StringUtils.equals(task.getName(), pushData.getTaskName())).findAny()
                 .orElseThrow(() -> new RuntimeException("配置信息不存在"));
-        DynamicTask dynamicTask = new DynamicTask(taskDo);
-        dynamicTask.passiveData(pushData);
+
+        String tableName = pushData.getTableName();
+        TableDo table = taskDo.getTables().stream().filter(tableDo -> StringUtils.equals(tableName, tableDo.getName()))
+                .findAny().orElseThrow(() -> new RuntimeException(StrUtil.format("表【{}】信息未配置", tableName)));
+
+        SmartDataSourceManager.checkAndSaveData(new OneTableExtend(taskDo, table), pushData.getData());
         return RespData.success();
     }
 }

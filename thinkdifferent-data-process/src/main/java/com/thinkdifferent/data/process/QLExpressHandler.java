@@ -1,5 +1,6 @@
 package com.thinkdifferent.data.process;
 
+import cn.hutool.core.util.StrUtil;
 import com.ql.util.express.DefaultContext;
 import com.ql.util.express.ExpressRunner;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,8 @@ public class QLExpressHandler extends AbstractDataHandler {
             this.setResult(String.valueOf(EXPRESS_RUNNER.execute(entity.getExpress(), context,
                     null, true, false)));
         } catch (Exception e) {
-            log.error("表达式计算错误, expressString:{}, context:{}", entity.getExpress(), context);
+            throw new RuntimeException(StrUtil.format("表达式计算错误, expressString:{}, context:{}"
+                    , entity.getExpress(), context));
         }
         return this;
     }

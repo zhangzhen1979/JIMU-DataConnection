@@ -1,6 +1,7 @@
 package com.thinkdifferent.data.scheduled;
 
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.config.CronTask;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ public class CronTaskRegistrar implements DisposableBean {
     private final Map<Runnable, ScheduledTask> scheduledTasks = new ConcurrentHashMap<>(16);
 
     @Resource
+    @Qualifier("taskThreadPoolTaskScheduler")
     private TaskScheduler taskScheduler;
 
     public TaskScheduler getScheduler() {

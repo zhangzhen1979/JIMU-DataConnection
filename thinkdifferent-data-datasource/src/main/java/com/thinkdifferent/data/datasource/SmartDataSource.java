@@ -1,40 +1,62 @@
 package com.thinkdifferent.data.datasource;
 
-import org.springframework.jdbc.core.JdbcTemplate;
+import com.thinkdifferent.data.extend.OneTableExtend;
 
-import javax.sql.DataSource;
-import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
-/**
- * 数据源接口
- *
- * @author ltian
- * @version 1.0
- * @date 2021/10/14 14:56
- */
-public interface SmartDataSource {
+public interface SmartDataSource extends Cloneable{
     /**
-     * @return 数据源名称
+     * 单次处理数量
      */
-    DataSourceType getTypeName();
+    int fetchSize = 2 << 9;
 
     /**
-     * @return 配置信息
+     * 初始化数据源
+     * @param properties    参数
+     * @return  ds
      */
-    Properties getProperties();
-
-    SmartDataSource setProperties(Properties properties) throws IOException;
+    SmartDataSource initDataSource(Properties properties);
 
     /**
-     * @return 数据源连接池
+     * 查询数据
+     *
+     * @param oneTableExtend    表对象
+     * @param incrementalCondition  增量条件
+     * @return 查询结果
      */
-    DataSource initDataSource() throws Exception;
-
+    List<Map<String, Object>> listEntity(OneTableExtend oneTableExtend, String incrementalCondition);
 
     /**
-     * @return jdbcTemplate
-     * @throws Exception initDataSource error
+     * @return 增量条件
      */
-    JdbcTemplate getJdbcTemplate() throws Exception;
+    String getIncrementalCondition(OneTableExtend oneTableExtend);
+
+    /**
+     * @return 加工后数据
+     */
+    Map<String, Object> process(OneTableExtend oneTableExtend, Map<String, Object> entity);
+
+    /**
+     *
+     * @return 保存结果
+     */
+    boolean saveEntity(OneTableExtend oneTableExtend, List<Map<String, Object>> entityList);
+
+    /**
+     *
+     */
+    boolean afterSave(OneTableExtend oneTableExtend);
+
+    /**
+     * 数据源关闭
+     */
+    void close();
+
+    /**
+     * 是否还有数据未获取
+     * @return bln
+     */
+    boolean next();
 }

@@ -45,6 +45,9 @@ public class ScheduleConfiguration {
         System.setProperty(LOG_FILE_DIRECTORY_KEY
                 , StringUtils.isNotBlank(csvPath) ? csvPath : System.getProperty("user.dir") + File.separator + "log");
 
+        // druid 配置
+        System.setProperty("druid.mysql.usePingMethod","false");
+
     }
 
     @Resource

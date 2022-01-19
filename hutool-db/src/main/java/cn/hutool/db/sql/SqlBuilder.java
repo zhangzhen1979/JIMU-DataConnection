@@ -228,8 +228,6 @@ public class SqlBuilder implements Builder<String> {
 		validateEntity(entity);
 
 		if (null != wrapper) {
-			// 包装表名
-			// entity = wrapper.wrap(entity);
 			entity.setTableName(wrapper.wrap(entity.getTableName()));
 		}
 

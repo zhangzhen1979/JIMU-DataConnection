@@ -1,13 +1,13 @@
 package com.thinkdifferent.data.process;
 
-import com.thinkdifferent.data.cache.DictDataCache;
+import com.thinkdifferent.data.service.DictService;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * 字段配置处理
@@ -17,6 +17,9 @@ import java.util.Optional;
  */
 @Component
 public class DictHandler extends AbstractDataHandler{
+    @Resource
+    private DictService dictService;
+
     @Override
     public DataHandlerType getType() {
         return DataHandlerType.DICT;
@@ -26,7 +29,7 @@ public class DictHandler extends AbstractDataHandler{
      * 配置示例 ： 字典表.code字段
      * <field targetName="companyName" targetType="varchar" handleType="DICT" handleExpress="dict1.companyId"/>
      * @param entity input对象
-     * @return
+     * @return this
      */
     @SneakyThrows
     @Override
@@ -43,7 +46,7 @@ public class DictHandler extends AbstractDataHandler{
                 .orElse(null);
         String value ;
         if (Objects.nonNull(codeEntry) && StringUtils.isNotBlank(value = String.valueOf(codeEntry.getValue()))){
-            this.setResult(DictDataCache.get(taskName, fromName, tableName, value));
+            this.setResult(dictService.get(taskName, fromName, tableName, value));
         }
         return this;
     }

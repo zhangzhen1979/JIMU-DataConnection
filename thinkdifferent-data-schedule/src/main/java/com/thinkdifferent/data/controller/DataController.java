@@ -1,7 +1,7 @@
 package com.thinkdifferent.data.controller;
 
-import com.thinkdifferent.data.controller.bean.PushData;
-import com.thinkdifferent.data.controller.bean.RespData;
+import com.thinkdifferent.data.rest.PushData;
+import com.thinkdifferent.data.rest.RespData;
 import com.thinkdifferent.data.task.LoadXmlFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
@@ -34,7 +34,7 @@ public class DataController {
      * @return json
      */
     @PostMapping("upload")
-    public RespData uploadData(@Valid @RequestBody PushData pushData, BindingResult result) {
+    public RespData<Object> uploadData(@Valid @RequestBody PushData pushData, BindingResult result) {
         if (result.hasErrors()) {
             return RespData.failed(result.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining(",")));
         }

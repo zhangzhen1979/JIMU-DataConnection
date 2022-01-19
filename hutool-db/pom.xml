@@ -11,6 +11,7 @@
 
     <groupId>com.thinkdifferent.hutool.db</groupId>
     <artifactId>hutool-db</artifactId>
+    <version>5.7.18-bate</version>
 
     <properties>
         <!-- versions -->
@@ -59,8 +60,13 @@
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>${druid.version}</version>
-            <optional>true</optional>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.alibaba</groupId>-->
+<!--            <artifactId>druid</artifactId>-->
+<!--            <version>${druid.version}</version>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP-java7</artifactId>
