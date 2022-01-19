@@ -4,7 +4,6 @@ import cn.hutool.core.util.ReUtil;
 import com.thinkdifferent.data.constants.ProcessConstant;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -22,7 +21,6 @@ import java.util.regex.Pattern;
  * 文件处理，自定义文件配置处理类需配置 think.different.custom.handler.file = true
  */
 @ConditionalOnProperty(prefix = "think.different.custom.handler", name = "file", havingValue = "false")
-@ConditionalOnMissingClass
 @Service
 public class DefaultFileHandler extends AbstractDataHandler {
     // 默认下载路径
