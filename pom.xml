@@ -32,7 +32,7 @@
         <guava.version>31.0.1-jre</guava.version>
         <commons.lang3.version>3.1</commons.lang3.version>
         <lombok.version>1.18.6</lombok.version>
-        <hutool.version>5.7.18</hutool.version>
+        <hutool.version>5.8.12</hutool.version>
         <xstream.version>1.4.10</xstream.version>
         <commons.io.version>2.7</commons.io.version>
         <validator.version>7.0.2.Final</validator.version>
